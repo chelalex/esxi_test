@@ -1,0 +1,10 @@
+---
+#- name: configure gateway
+#  hosts: gateway_host
+#  roles:
+#    - gateway
+- name: scheduled backup from esxi host
+  hosts: esxi_hosts
+  roles:
+    - role: esxi   
+      host: 172.18.19.122

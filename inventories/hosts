@@ -1,0 +1,4 @@
+[esxi_hosts]
+esxi_host ansible_host=172.18.19.122 ansible_connection=ssh ansible_user=root private_key_file=~/.ssh/id_rsa.pub
+[gateway_hosts]
+gateway_host ansible_host=172.18.19.115 ansible_connection=ssh ansible_user=root private_key_file=~/.ssh/id_rsa.pub

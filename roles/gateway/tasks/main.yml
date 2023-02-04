@@ -1,0 +1,46 @@
+---
+# tasks file for gateway
+#- name: Refresh cache
+#  apt:
+#    update_cache: yes
+- name: update and upgrade apt packages
+  apt:
+    update_cache: true 
+    upgrade: dist
+    cache_valid_time: 3600
+    force_apt_get: true
+  become: true
+- name: install isc-dhcp-server
+  apt:
+    pkg: isc-dhcp-server
+  become: true
+- name: configure dhcp-server
+  copy:
+     src: dhcpd.conf
+     dest: /etc/dhcp/dhcpd.conf
+  become: true
+  notify: restart isc-dhcp-server
+- name: configure network
+  copy:
+     src: 00-installer-config.yaml
+     dest: /etc/netplan/00-installer-config.yaml
+  become: true
+  notify: apply netplan
+- name: iptables snat
+  ansible.builtin.iptables:
+     table: nat
+     chain: POSTROUTING
+     out_interface: ens160
+     jump: MASQUERADE
+  become: true
+  ignore_errors: true
+  notify: save rules
+- name: accept all forward
+  ansible.builtin.iptables:
+     chain: FORWARD
+     in_interface: ens192
+     out_interface: ens160
+     jump: ACCEPT
+  become: true
+  ignore_errors: true
+  notify: save rules

@@ -1,0 +1,4 @@
+---
+# handlers file for esxi
+- name: remove old copy
+  shell: rm -rf ~/*.tar.gz

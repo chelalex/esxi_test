@@ -1,0 +1,16 @@
+---
+# tasks file for esxi
+- name: define paths to datastores
+  shell: ls /vmfs/volumes | grep datastore
+  register: db_dirs
+#- name: output of result
+#  debug:
+#      var: db_dirs.stdout_lines
+- name: take backup of datastores
+  shell: tar -vcf {{ item }}$(date "+%Y-%m-%d_%H:%M:%S").tar.gz /vmfs/volumes/{{ item }}
+  with_items: "{{ db_dirs.stdout_lines }}"
+- name: copy to backup server
+  shell: rm -rf ~/backups/*tar.gz && scp root@{{ host }}:~/*tar.gz ~/backups
+  delegate_to: localhost
+  ignore_errors: true
+  notify: remove old copy

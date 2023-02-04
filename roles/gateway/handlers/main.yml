@@ -1,0 +1,11 @@
+---
+# handlers file for gateway
+- name: restart isc-dhcp-server
+  shell: systemctl restart isc-dhcp-server
+  become: true
+- name: apply netplan
+  shell: netplan apply
+  become: true
+- name: save rules
+  shell: iptables-save > /etc/iptables/rules.v4
+  become: true
